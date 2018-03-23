@@ -12,31 +12,53 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value = "/wschat")
-public class WsChat{
+public class WsChat {
+
     //notice:not thread-safe
     private static ArrayList<Session> sessionList = new ArrayList<Session>();
-    
+
     @OnOpen
-    public void onOpen(Session session){
-        try{
+    public void onOpen(Session session) {
+        try {
             sessionList.add(session);
+            for (Session user : sessionList) {
+                System.out.println("User "+user.getId());
+            }
             //asynchronous communication
-            session.getBasicRemote().sendText("Hello!");
-        }catch(IOException e){}
+            session.getBasicRemote().sendText("Hello User "+session.getId()+"!");
+        } catch (IOException e) {
+        }
     }
-    
+
     @OnClose
-    public void onClose(Session session){
+    public void onClose(Session session) {
         sessionList.remove(session);
     }
-    
+
     @OnMessage
-    public void onMessage(String msg){
-        try{
-            for(Session session : sessionList){
-                //asynchronous communication
-                session.getBasicRemote().sendText(msg);
+    public void onMessage(String msg) {
+        try {
+            String listaUsers = "";
+            for (Session session : sessionList) {
+                listaUsers += "User "+session.getId() + "\n";
+                System.out.println("User "+session.getId());
             }
-        }catch(IOException e){}
+            
+            for (Session session : sessionList) {
+                //System.out.println(session.getUs);
+                
+                //asynchronous communication
+                String message = msg;
+                if (message.startsWith("100,")) {
+                    String[] msgDivided = message.split(",");
+                    msg = "Se envia " + msgDivided[1];
+                    message = "Te han pintado de "+msgDivided[1];
+                    session.getBasicRemote().sendText(message +"\n"+listaUsers);
+                } else {
+                    session.getBasicRemote().sendText(message +"\n"+listaUsers);
+                }
+            }
+        } catch (IOException e) {
+        }
     }
 }

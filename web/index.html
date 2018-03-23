@@ -1,28 +1,16 @@
 <!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
 <html>
     <head>
-        <meta charset="utf-8">
-        <title>Tomcat WebSocket Chat</title>
-        <script>
-            var ws = new WebSocket("ws://192.168.1.38:8084/WebSocketChat/wschat");
-            ws.onopen = function(){
-            };
-            ws.onmessage = function(message){
-                document.getElementById("chatlog").textContent += message.data + "\n";
-            };
-            function postToServer(){
-                ws.send(document.getElementById("msg").value);
-                document.getElementById("msg").value = "";
-            }
-            function closeConnect(){
-                ws.close();
-            }
-        </script>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <textarea id="chatlog" readonly></textarea><br/>
-        <input id="msg" type="text" />
-        <button type="submit" id="sendButton" onClick="postToServer()">Send!</button>
-        <button type="submit" id="sendButton" onClick="closeConnect()">End</button>
+        <div>TODO write content</div>
     </body>
 </html>
