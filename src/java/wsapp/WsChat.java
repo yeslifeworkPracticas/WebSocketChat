@@ -12,31 +12,51 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value = "/wschat")
-public class WsChat{
+public class WsChat {
+
     //notice:not thread-safe
     private static ArrayList<Session> sessionList = new ArrayList<Session>();
-    
+
     @OnOpen
-    public void onOpen(Session session){
-        try{
-            sessionList.add(session);
-            //asynchronous communication
-            session.getBasicRemote().sendText("Hello!");
-        }catch(IOException e){}
+    public void onOpen(Session session) {
+        //try {
+        sessionList.add(session);
+        //asynchronous communication
+        //session.getBasicRemote().sendText("#FF0000");
+        //} catch (IOException e) {
+        //}
     }
-    
+
     @OnClose
-    public void onClose(Session session){
+    public void onClose(Session session) {
         sessionList.remove(session);
     }
-    
+
     @OnMessage
-    public void onMessage(String msg){
-        try{
-            for(Session session : sessionList){
-                //asynchronous communication
-                session.getBasicRemote().sendText(msg);
+    public void onMessage(String msg) {
+        try {
+            //String message = InterpretarMensaje(msg);
+            for (Session session : sessionList) {
+                session.getBasicRemote().sendText(InterpretarMensaje(session,msg));
+
             }
-        }catch(IOException e){}
+        } catch (IOException e) {
+        }
+    }
+
+    private String InterpretarMensaje(Session msg,String o) {
+        String mensaje = null;
+       mensaje = o + msg.getId();
+        /*
+        if (msg.contains(",")) {
+            String[] dividir = msg.split(",");
+            msg = dividir[0];
+            if (msg.equals("100")) {
+                mensaje = "#FF0000";
+            }
+        } else {
+            mensaje = msg;
+        }*/
+        return mensaje;
     }
 }
