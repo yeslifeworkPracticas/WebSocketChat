@@ -17,11 +17,9 @@ function postToServer() {
     var userMessage = document.getElementById("msg").value;
     var listUser = document.getElementById("userList").value;
     
-    document.getElementById("msg").textContent = "";
-    document.getElementById("userList").textContent = "";
+    document.getElementById("msg").value = "";
     
     var SendMessage = "userMessage: "+ userMessage+", listUser: "+listUser;
-    
     ws.send(SendMessage);
 }
 
