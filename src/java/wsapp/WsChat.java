@@ -19,6 +19,7 @@ public class WsChat {
 
     //notice:not thread-safe
     private static ArrayList<Session> sessionList = new ArrayList<Session>();
+    private String userName = "";
 
     @OnOpen
     public void onOpen(Session session) {
@@ -32,8 +33,9 @@ public class WsChat {
                 System.out.println(userID);
             }
             //asynchronous communication
+            userName = "User " + session.getId();
             String userMessage = "Hello User " + session.getId() + "!";
-            String texto = "userMessage: "+ userMessage+", listUser: "+listaUsers;
+            String texto = "userMessage: " + userMessage + ", listUser: " + listaUsers;
             session.getBasicRemote().sendText(texto);
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,20 +56,24 @@ public class WsChat {
                 listaUsers += userID + "\n";
                 System.out.println(userID);
             }
-            
+
             for (Session session : sessionList) {
                 //System.out.println(session.getUs);
 
                 //asynchronous communication
                 String message = msg;
                 if (message.startsWith("userMessage: 100,")) {
-                    String[] msgDivided = message.split(",",2);
-                    String[] color = msgDivided[1].split(", listUser:",2);
+                    String[] msgDivided = message.split(",", 2);
+                    String[] color = msgDivided[1].split(", listUser:", 2);
                     String senderOfMsg = "Se envia " + color[0];
-                    String userMessage = "Te han pintado de " + color[0];
-                    message = "userMessage: "+ userMessage+", listUser: "+listaUsers;
+                    String userMessage = userName + ": " + "Te han pintado de " + color[0];
+                    message = "userMessage: " + userMessage + ", listUser: " + listaUsers;
                     session.getBasicRemote().sendText(message);
                 } else {
+                    String[] msgDivided = message.split("userMessage: ", 2);
+                    String[] messages = msgDivided[1].split(", listUser:", 2);
+                    String userMessage = userName + ": " + messages[0];
+                    message = "userMessage: " + userMessage + ", listUser: " + listaUsers;
                     session.getBasicRemote().sendText(message);
                 }
             }
