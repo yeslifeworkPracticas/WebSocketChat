@@ -33,7 +33,7 @@ public class WsChat {
                 System.out.println(userID);
             }
             //asynchronous communication
-            userName = "User " + session.getId();
+            userName = session.getId();
             String userMessage = "Hello User " + session.getId() + "!";
             String texto = "userMessage: " + userMessage + ", listUser: " + listaUsers;
             session.getBasicRemote().sendText(texto);
@@ -70,11 +70,16 @@ public class WsChat {
                     message = "userMessage: " + userMessage + ", listUser: " + listaUsers;
                     session.getBasicRemote().sendText(message);
                 } else {
-                    String[] msgDivided = message.split("userMessage: ", 2);
-                    String[] messages = msgDivided[1].split(", listUser:", 2);
-                    String userMessage = userName + ": " + messages[0];
-                    message = "userMessage: " + userMessage + ", listUser: " + listaUsers;
-                    session.getBasicRemote().sendText(message);
+                    if (userName.equals(session.getId())) {
+                        message = "userMessage: " + "Enviaste un mensaje" + ", listUser: " + listaUsers;
+                        session.getBasicRemote().sendText(message);
+                    } else {
+                        String[] msgDivided = message.split("userMessage: ", 2);
+                        String[] messages = msgDivided[1].split(", listUser:", 2);
+                        String userMessage = userName + ": " + messages[0];
+                        message = "userMessage: " + userMessage + ", listUser: " + listaUsers;
+                        session.getBasicRemote().sendText(message);
+                    }
                 }
             }
 
