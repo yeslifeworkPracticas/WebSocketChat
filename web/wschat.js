@@ -3,24 +3,26 @@ ws.onopen = function () {
 
 };
 ws.onmessage = function (msg) {
-    var message = JSON.parse(msg.data);
+    var message = msg.data;
     
-    document.getElementById("userList").textContent = message.listUser;
-    document.getElementById("chatlog").textContent += message.userMessage + "\n";
+    var msgDivided = message.split("userMessage: ",2);
+    var messages = msgDivided[1].split(", listUser: ",2);
+    var userMessage = messages[0];
+    var userList = messages[1];
+    
+    document.getElementById("chatlog").textContent += userMessage + "\n";
+    document.getElementById("userList").textContent = userList;
 };
 function postToServer() {
-    var listUser = document.getElementById("userList").value;
     var userMessage = document.getElementById("msg").value;
+    var listUser = document.getElementById("userList").value;
     
-    document.getElementById("userList").textContent = ""
     document.getElementById("msg").textContent = "";
+    document.getElementById("userList").textContent = "";
     
-    var SendMessage = {
-        listUser: listUser,
-        userMessage: userMessage
-    };
+    var SendMessage = "userMessage: "+ userMessage+", listUser: "+listUser;
     
-    ws.send(JSON.stringify(SendMessage));
+    ws.send(SendMessage);
 }
 
 function closeConnect() {

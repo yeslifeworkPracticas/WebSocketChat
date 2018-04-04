@@ -31,9 +31,10 @@ public class WsChat {
                 listaUsers += userID + "\n";
                 System.out.println(userID);
             }
-            session.getBasicRemote().sendText(listaUsers);
             //asynchronous communication
-            session.getBasicRemote().sendText("Hello User " + session.getId() + "!");
+            String userMessage = "Hello User " + session.getId() + "!";
+            String texto = "userMessage: "+ userMessage+", listUser: "+listaUsers;
+            session.getBasicRemote().sendText(texto);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,34 +48,27 @@ public class WsChat {
     @OnMessage
     public void onMessage(String msg) {
         try {
-            JsonReader reader;
-            reader = Json.createReader(new StringReader(msg));
-            JsonObject jsonMessage = reader.readObject();
-
             String listaUsers = "";
             for (Session session : sessionList) {
                 String userID = "User " + session.getId();
                 listaUsers += userID + "\n";
                 System.out.println(userID);
             }
-
-            JsonProvider provider = JsonProvider.provider();
-            JsonObject addMessage = provider.createObjectBuilder()
-                    .add("listUser", listaUsers)
-                    .add("userMessage", "ALgo algo")
-                    .build();
+            
             for (Session session : sessionList) {
                 //System.out.println(session.getUs);
 
                 //asynchronous communication
                 String message = msg;
-                if (message.startsWith("100,")) {
-                    String[] msgDivided = message.split(",");
-                    msg = "Se envia " + msgDivided[1];
-                    message = "Te han pintado de " + msgDivided[1];
-                    session.getBasicRemote().sendText(addMessage.toString());
+                if (message.startsWith("userMessage: 100,")) {
+                    String[] msgDivided = message.split(",",2);
+                    String[] color = msgDivided[1].split(", listUser:",2);
+                    String senderOfMsg = "Se envia " + color[0];
+                    String userMessage = "Te han pintado de " + color[0];
+                    message = "userMessage: "+ userMessage+", listUser: "+listaUsers;
+                    session.getBasicRemote().sendText(message);
                 } else {
-                    session.getBasicRemote().sendText(addMessage.toString());
+                    session.getBasicRemote().sendText(message);
                 }
             }
 
