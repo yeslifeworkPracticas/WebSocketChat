@@ -40,7 +40,8 @@ public class WsChat {
                 session.getBasicRemote().sendText(InterpretarMensaje(session,msg));
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
